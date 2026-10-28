@@ -1,4 +1,4 @@
-name: Coba macOS
+name: Lihat Google di macOS
 
 on:
   workflow_dispatch:
@@ -7,17 +7,34 @@ permissions:
   contents: read
 
 jobs:
-  informasi:
+  browser:
     runs-on: macos-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
-      - name: Informasi sistem
-        run: |
-          sw_vers
-          uname -m
+      - name: Siapkan Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
 
-      - name: Cek IP keluar
+      - name: Instal browser
         run: |
-          curl -4 --fail --max-time 30 https://checkip.amazonaws.com
-          echo
+          npm init -y
+          npm install --save-dev playwright
+          npx playwright install chromium
+
+      - name: Buka Google dan ambil screenshot
+        run: |
+          npx playwright screenshot \
+            --browser chromium \
+            --viewport-size "1366,768" \
+            --wait-for-timeout 5000 \
+            https://www.google.com \
+            google.png
+
+      - name: Simpan screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: tampilan-google
+          path: google.png
+          retention-days: 1
