@@ -1,0 +1,23 @@
+name: Coba macOS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  informasi:
+    runs-on: macos-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Informasi sistem
+        run: |
+          sw_vers
+          uname -m
+
+      - name: Cek IP keluar
+        run: |
+          curl -4 --fail --max-time 30 https://checkip.amazonaws.com
+          echo
